@@ -9,11 +9,18 @@ Built on Headpenguin's [SMGNetworkMultiplayer](https://github.com/Headpenguin/SM
 (the game-side code) with a rewritten server and protocol (version 1.0). See
 [CREDITS.md](CREDITS.md).
 
+> **What has actually been tested:** the game mod in Dolphin on Windows
+> (played over the internet), and the server on Windows and Linux.
+> **Not tested on real hardware:** the Wii / Wii U version has never been run
+> on an actual console, and the Mac launchers have never been run on a Mac.
+> Those two are provided as-is; reports are welcome.
+
 | Platform | Status |
 |---|---|
-| Dolphin on Windows | Works; played over the internet by several people |
-| Dolphin on macOS | Launchers written, not yet tried on a real Mac (`mac/`) |
-| Wii / Wii U (Wii Mode) | Builds, not yet tried on a console (`wii/`) |
+| Dolphin on Windows | Tested; played over the internet by several people |
+| Server on Windows / Linux | Tested (automated test suite on both) |
+| Dolphin on macOS | Untested: launchers written, never run on a real Mac (`mac/`) |
+| Wii / Wii U (Wii Mode) | Untested: builds and loads in Dolphin, never run on a console (`wii/`) |
 
 **No game files are included.** You need your own copy of the game.
 

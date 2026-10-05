@@ -33,7 +33,7 @@ FILES = [
     "wii/READ ME - WII AND WII U.txt", "wii/SD-card/riivolution/SMGOnline_USA.xml",
     "wii/SD-card/smgonline/CustomCode_USA.bin", "wii/SD-card/smgonline/debugIP.txt",
     "wii/SD-card/smgonline/serverIP.txt",
-    "tools/export_repo.py", "tools/pack_all.py",
+    "tools/export_repo.py", "tools/pack_all.py", "tools/scan_zips.py",
     "tools/title/build_title.py", "tools/title/make_strip.py",
     "tools/emutest/README.md", "tools/emutest/drive.py", "tools/emutest/ingame.py", "tools/emutest/goto_game.py",
     "tools/emutest/state.py", "tools/emutest/launch_test.py", "tools/emutest/both_ingame.py",
