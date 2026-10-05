@@ -1,0 +1,90 @@
+SMG ONLINE
+==========
+
+There is nothing to install into Dolphin. This folder IS the mod: you start
+the game through one of the .bat files here and it runs with the mod on.
+(Opening Dolphin normally gives you the plain game.)
+
+Everyone needs:
+  * Dolphin (https://dolphin-emu.org)
+  * Their own Super Mario Galaxy, USA version (.wbfs, .iso or .rvz)
+  * A Wii Remote + Nunchuk set up in Dolphin
+    (Controllers > Wii Remote 1 > Emulated Wii Remote > Configure,
+     Extension = Nunchuk)
+
+EASIEST WAY: double-click "SMG ONLINE.bat". A window opens where you pick
+your colour, type the host's address and press Join (or Host). The other
+.bat files do the same things without the window.
+
+Player colours: everyone can pick one of 8 outfits (shirt/cap and overalls),
+so you can tell each other apart. Players on an older version of the mod
+simply show as normal Mario.
+
+Title screen: the game's logo gets ONLINE under it. This is made from your
+own game file the first time you start; untick it in the window if you do
+not want it.
+
+First: right-click the zip > Extract All. Do not run it from inside the zip.
+If Windows blocks a .bat, click "More info" > "Run anyway".
+The first time, it asks where Dolphin.exe and your game file are. Hold Shift,
+right-click the file, "Copy as path", and paste. They are remembered for your
+Windows user, also when you later replace this folder with a newer version.
+To set or change them any time: "SET DOLPHIN AND GAME PATH.bat".
+
+
+ONE PERSON HOSTS (the one who can port forward)
+-----------------------------------------------
+  1. Install Python 3 from https://www.python.org/downloads/
+     and tick "Add python.exe to PATH" in the installer.
+  2. On your router, forward UDP port 5029 to your PC.
+  3. Double-click "HOST A GAME.bat".
+     A server window opens (keep it open) and your game starts.
+     Allow Python if Windows Firewall asks.
+  4. Send your friends your public IP (search "what is my ip").
+
+  The server window shows "player N joined" for everyone who connects, you
+  included. If a friend never shows up there, the port forward or the IP is
+  wrong.
+
+  The shared save progress lives in server\progress.json on the host's PC.
+
+
+SERVER SETTINGS (host only)
+---------------------------
+Double-click "SERVER SETTINGS.bat" to open the settings in Notepad, change
+what you want, save, then restart the server. You can set:
+
+  port             the UDP port (forward the same one on your router).
+                   If it is not 5029, friends type  your-ip:port  to join.
+  max_players      how many can be connected at once
+  world            name of the shared world; each name keeps its own
+                   progress, so you can run several playthroughs
+  share_progress   yes / no  (no = you only see each other)
+  share_star_bits  yes / no
+  player_timeout   seconds before a silent player is dropped
+  update_rate      position updates per second (lower = less bandwidth)
+
+To start a world over, delete its progress file in the server folder
+(progress.json for the default world) while the server is stopped.
+
+
+EVERYONE ELSE JOINS
+-------------------
+  1. Double-click "JOIN A FRIEND.bat".
+  2. Type the host's public IP and press Enter (add :port if the host
+     changed the port, e.g. 203.0.113.7:1027). Next time just press Enter
+     to join the same server again.
+  3. Load your save and play.
+
+
+PLAYING
+-------
+You see each other when you are in the same galaxy and the same star (the
+Comet Observatory counts as one place).
+
+To beat the game together: everyone makes a NEW save file and plays the
+intro. From the Comet Observatory on, every star anyone collects is shared,
+along with the galaxies it unlocks.
+
+The mod uses its own copy of your save, kept with your Windows user, so your
+normal Dolphin save is not changed and updating this folder loses nothing.

@@ -1,0 +1,5 @@
+.*.swp
+config.mk
+ignore/*
+obj/*
+bin/*

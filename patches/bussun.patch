@@ -1,0 +1,14 @@
+diff --git a/include/kamek/hooks.h b/include/kamek/hooks.h
+index c8c353b..11841e0 100644
+--- a/include/kamek/hooks.h
++++ b/include/kamek/hooks.h
+@@ -5,7 +5,9 @@
+ #pragma section RX ".kamek"
+ 
+ // bad approach, but whatever
++#ifndef __COUNTER__
+ #define __COUNTER__ __LINE__
++#endif
+ 
+ // hook type IDs _must_ match what's in the Kamek source!
+ #define kctWrite 1

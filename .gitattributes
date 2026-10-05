@@ -1,0 +1,10 @@
+# Scripts that run on macOS/Linux must keep LF line endings
+*.sh       text eol=lf
+*.command  text eol=lf
+*.py       text eol=lf
+# Windows scripts keep CRLF
+*.bat      text eol=crlf
+*.ps1      text eol=crlf
+# Never touch these
+*.bin      binary
+*.patch    -text

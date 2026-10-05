@@ -1,0 +1,41 @@
+# Never commit: games, extracted game data, compilers, saves, personal settings
+*.wbfs
+*.iso
+*.rvz
+*.wia
+*.gcz
+*.arc
+*.7z
+riivolution/TitleLogo.*
+riivolution/riivo_USA_title.xml
+dolphin-users/
+launcher-paths.txt
+galaxy-online.json
+private-words.txt
+backups/
+toolchain/
+client/
+packs/
+
+# The server's saved world and settings are per host
+server/progress*.json
+server/server-settings.ini
+
+# Other people's repositories are cloned next to this one for building
+Petari/
+Petari-mp/
+BussunChanges/
+Kamek/
+
+# Build leftovers
+SMGNetworkMultiplayer/obj/
+SMGNetworkMultiplayer/bin/
+SMGNetworkMultiplayer/config.mk
+__pycache__/
+*.pyc
+
+# Test harness leftovers
+tools/emutest/profiles/
+tools/emutest/*.png
+tools/emutest/*.json
+tools/emutest/err-*.txt

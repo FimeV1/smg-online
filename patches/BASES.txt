@@ -1,0 +1,7 @@
+Patches in this folder apply to these upstream commits:
+
+petari-mp.patch   https://github.com/Headpenguin/Petari.git @ e1de9637907ad4bc269f4a1afb380a5acbb72011
+bussun.patch      https://github.com/Headpenguin/BussunChanges.git @ 5660295d58c7e4a2038fa079d7de50af44a71e61
+
+SMGNetworkMultiplayer/ in this repository started from
+https://github.com/Headpenguin/SMGNetworkMultiplayer @ a67c85fd76715a06811221cf749099c1bf43bd50

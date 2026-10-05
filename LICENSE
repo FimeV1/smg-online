@@ -1,0 +1,42 @@
+MIT License
+
+Copyright (c) 2026 the SMG Online contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+What this licence covers
+
+It covers the files written for this project: everything under server/, mac/,
+wii/ (except the loader code inside the .xml), title/, tools/, patches/, docs/,
+the launcher scripts in the top folder, and these files in
+SMGNetworkMultiplayer/: source/playerColors.cpp, source/progressSync.cpp,
+include/playerColors.hpp, include/progressSync.hpp and
+include/packets/gameProgress.hpp, plus our changes to the other files there.
+
+It does NOT cover:
+
+  * The rest of SMGNetworkMultiplayer/, which is Headpenguin's
+    SMGNetworkMultiplayer (https://github.com/Headpenguin/SMGNetworkMultiplayer).
+    That project is published without a licence; its code remains its
+    author's. See CREDITS.md.
+  * The Syati/Bussun loader code embedded in riivolution/riivo_USA.xml and
+    wii/SD-card/riivolution/SMGOnline_USA.xml, which belongs to its authors.
+  * Super Mario Galaxy itself. No part of the game is included here; you need
+    your own copy.

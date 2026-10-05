@@ -1,0 +1,69 @@
+SMG ONLINE - macOS
+==================
+
+STATUS: the Mac launchers have NOT been run on a real Mac yet (their logic was
+tested on Linux). The mod and the server are the same ones the Windows
+players use. If something fails, send back exactly what the window says.
+
+There is nothing to install into Dolphin. This folder IS the mod: you start
+the game through the .command files here and it runs with the mod on.
+(Opening Dolphin normally gives you the plain game.)
+
+You need
+--------
+  * Dolphin for macOS (https://dolphin-emu.org), ideally in /Applications
+  * Your own Super Mario Galaxy, USA version (.wbfs, .iso or .rvz)
+  * A Wii Remote + Nunchuk set up in Dolphin
+    (Controllers > Wii Remote 1 > Emulated Wii Remote > Configure,
+     Extension = Nunchuk)
+
+First time: let macOS run the launchers
+---------------------------------------
+macOS blocks scripts that were downloaded. Do this once:
+  1. Unzip, and put the SMG-Online-Mac folder somewhere (e.g. Desktop).
+  2. Right-click "JOIN A FRIEND.command" > Open > Open.
+     (Do the same for the other .command files the first time you use them.)
+If it still refuses, open Terminal and run (drag the folder in for the path):
+     xattr -dr com.apple.quarantine /path/to/SMG-Online-Mac
+     chmod +x /path/to/SMG-Online-Mac/*.command
+
+Join a game
+-----------
+  1. Double-click "JOIN A FRIEND.command".
+  2. Type the host's address and press Enter, e.g. 203.0.113.7:1027
+     (leave out :port if the host uses the default 5029).
+     Next time just press Enter to join the same server.
+  3. The first time it asks where your game file is (and Dolphin, if it is
+     not in /Applications): drag the file into the window and press Enter.
+     It is remembered. Change it later with "SET DOLPHIN AND GAME PATH.command".
+  4. Dolphin starts with the mod on. Load your save and play.
+
+Player colour
+-------------
+Double-click "CHOOSE COLOUR.command" and type a number from 0 to 7. Other
+players then see your Mario in that outfit (0 is normal Mario). Players on
+Windows pick theirs in the launcher window; everyone sees everyone's colour.
+(The ONLINE title screen is Windows-only for now.)
+
+Host a game
+-----------
+  1. Install Python 3 if "python3" is not there yet
+     (https://www.python.org/downloads/).
+  2. Forward UDP port 5029 (or your own port) on your router to this Mac.
+  3. Double-click "HOST A GAME.command". A second Terminal window is the
+     server: keep it open. It shows "player N joined" for everyone.
+  4. "SERVER SETTINGS.command" opens the settings (port, player limit, shared
+     world, what is shared). Restart the server after changing them.
+
+Playing
+-------
+You see each other when you are in the same galaxy and the same star (the
+Comet Observatory counts as one place). Mac, Windows and Wii players can all
+be on the same server.
+
+To beat the game together: everyone makes a NEW save file and plays the
+intro. From the Comet Observatory on, every star anyone collects is shared.
+
+The mod uses its own copy of your save and settings, kept in
+~/Library/Application Support/SMG-Online, so your normal Dolphin save is not
+changed and updating this folder loses nothing.

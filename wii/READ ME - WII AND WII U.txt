@@ -1,0 +1,68 @@
+SMG ONLINE - Wii / Wii U version
+================================
+
+STATUS: this build has NOT been tried on a real console yet. The same code
+connects and runs in the Dolphin emulator; you are the first hardware test.
+Please report what happens.
+
+Wii and Wii U use the same files. On a Wii U the mod runs in Wii Mode (vWii).
+The digital (eShop) version of the game on Wii U cannot be used: Riivolution
+needs the game DISC.
+
+You need
+--------
+  * A Wii, or a Wii U in Wii Mode, with the Homebrew Channel installed
+  * Riivolution installed in the Homebrew Channel
+  * A Super Mario Galaxy DISC, USA version (RMGE01)
+  * An SD card (FAT32)
+  * The console connected to the internet (Wii Settings > Internet)
+  * Someone running the SMG Online server on a PC (see the PC pack)
+
+Install
+-------
+  1. Copy the two folders from "SD-card" onto the root of your SD card, so
+     the card has:
+         riivolution\SMGOnline_USA.xml
+         smgonline\CustomCode_USA.bin
+         smgonline\serverIP.txt
+         smgonline\debugIP.txt
+     (If the card already has a "riivolution" folder, just add the xml to it.)
+
+  2. On a PC, open  smgonline\serverIP.txt  on the SD card with Notepad and
+     replace its contents with the server's address and port, for example:
+         203.0.113.7:1027
+     One line, nothing else. If the server is on a PC in the same house as
+     the console, use that PC's local address (like 192.168.0.25:5029).
+
+Player colour (optional)
+------------------------
+Add  c=N  after the address in serverIP.txt, with N from 0 to 7, e.g.
+    203.0.113.7:1027 c=4
+0 normal Mario, 1 green, 2 yellow and purple, 3 purple and black,
+4 blue and red, 5 white and red, 6 orange and teal, 7 pink and white.
+Other players see you in that outfit.
+
+Play
+----
+  1. Put the SD card and the game disc in the console.
+  2. Homebrew Channel > Riivolution.
+  3. Set "Online multiplayer" (under "SMG Online") to Enabled, then Launch.
+  4. The game connects when it reaches the title screen. The host's server
+     window shows "player N joined".
+  5. Load your save. You see other players in the same galaxy and star, and
+     progress is shared from the Comet Observatory on.
+
+Without the mod: start the game normally, or set the option to Disabled.
+
+Good to know
+------------
+  * Wii and Dolphin players can be on the same server together.
+  * The mod uses your real save file on the console. Shared progress from
+    the server is written into it when the game saves. Back up your save
+    first (Wii Menu > Data Management) if you want to keep it as it is.
+  * A real Wii is far slower than a PC. A few players in view should be
+    fine; many at once may slow the game down.
+  * To change server later, edit serverIP.txt again.
+
+If it does not work, note exactly what you see (black screen, crash screen
+with text, game runs but nobody joins) and send it back.
