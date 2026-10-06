@@ -27,7 +27,7 @@ fully human-made, so read it and test it with that in mind.
 |---|---|
 | Dolphin on Windows | Tested; played over the internet by several people |
 | Server on Windows / Linux | Tested (automated test suite on both) |
-| Dolphin on macOS | Untested: launchers written, never run on a real Mac (`mac/`) |
+| Dolphin on macOS / Linux | Untested: launchers written and checked in a simulated setup, never run on a real Mac or Linux desktop (`mac/`) |
 | Wii / Wii U (Wii Mode) | Untested: builds and loads in Dolphin, never run on a console (`wii/`) |
 
 **No game files are included.** You need your own copy of the game.
@@ -91,6 +91,14 @@ The title screen gets `ONLINE` under the logo. It is built on each player's
 PC from their own game file (`title\build-title.ps1` + our own artwork in
 `title\online-strip.bin`), so no game files are shipped.
 
+## Cutscene fast-forward
+
+Hold **Down on the +Control Pad** during a cutscene or a conversation to play
+it at 4x speed. Nothing is skipped, so every unlock the cutscene causes still
+happens. Pre-rendered movies cannot be sped up; pressing Down during one
+skips it instead. On the keyboard layout the launcher sets up, that is the
+Down arrow key.
+
 ## What is synced
 
 | | |
@@ -99,6 +107,8 @@ PC from their own game file (`title\build-title.ps1` + our own artwork in
 | Animations | yes, including walk/run/swim blends (these used to freeze) and jumps |
 | Ground pound / stomping other players | yes |
 | Star bits you shoot | yes, other players see them and get hit |
+| Star bit counter inside a level | yes, players in the same level share one running count: pickups and shots by anyone change it for everyone there |
+| Star bit total | yes, the banked total is shared: what anyone earns or spends changes it for everyone (the newest total wins) |
 | Save progress: Power Stars, Grand Stars, visited stars, galaxy and dome unlocks, story events, "N more stars" unlock countdowns, Luigi quest, Luma feeding | yes, shared by everyone on the server (from the Comet Observatory on) |
 | Enemies, coins, objects, bosses | no, every player has their own world |
 
@@ -171,7 +181,7 @@ seeing each other.
 | `SMGNetworkMultiplayer/` | The code that runs inside the game (C/C++, built with CodeWarrior + Kamek) |
 | `server/` | The relay server (Python, no dependencies) and its tests |
 | top folder, `title/` | Windows launchers and the title-screen tool |
-| `mac/`, `wii/` | macOS launchers; SD-card layout for Wii / Wii U |
+| `mac/`, `wii/` | macOS and Linux launchers; SD-card layout for Wii / Wii U |
 | `riivolution/` | Ready-built mod file and loader patch for Dolphin |
 | `patches/` | Our changes to the Petari and Bussun headers needed to build |
 | `tools/` | Packaging, title artwork, privacy-checked export, in-emulator test harness |

@@ -1,4 +1,4 @@
-"""Assembles the Windows, Mac and Wii / Wii U packs as zips.
+"""Assembles the Windows, Mac / Linux and Wii / Wii U packs as zips.
 
     python tools/pack_all.py [output folder]      (default: ./packs)
 
@@ -57,17 +57,31 @@ legal = [(f, f, False) for f in ("LICENSE", "CREDITS.md") if os.path.exists(f)]
 
 os.makedirs(OUT, exist_ok=True)
 
+# Windows: only the launcher and the read-me are at the top; everything else
+# (which the launcher window drives) sits in "files" so the folder is not a
+# wall of scripts. The scripts find each other relative to themselves.
 win = mod + server + legal + [(f, f, False) for f in (
-    "SMG ONLINE.bat", "launcher.ps1", "start-galaxy.ps1", "start-server.ps1", "HOST A GAME.bat", "JOIN A FRIEND.bat",
-    "SERVER SETTINGS.bat", "SET DOLPHIN AND GAME PATH.bat", "START GALAXY ONLINE.bat", "FRIENDS - READ ME.txt", "README.md")]
+    "launcher.ps1", "start-galaxy.ps1", "start-server.ps1", "HOST A GAME.bat", "JOIN A FRIEND.bat",
+    "SERVER SETTINGS.bat", "SET DOLPHIN AND GAME PATH.bat", "START GALAXY ONLINE.bat", "README.md")]
 win += [(os.path.join("title", f), "title/" + f, False) for f in ("build-title.ps1", "online-strip.bin")]
+win = [(src, "files/" + name, exe) for src, name, exe in win]
+WIN_LAUNCHER = (b'@echo off\r\n'
+                b'REM Opens the SMG Online window: pick your colour, then Join or Host.\r\n'
+                b'start "" powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden'
+                b' -File "%~dp0files\\launcher.ps1"\r\n')
+WIN_NOTE = (b'NOTE: "SMG ONLINE.bat" is the only thing you need to open. Everything else\r\n'
+            b'(the other .bat files and the server folder mentioned below) is inside the\r\n'
+            b'"files" folder.\r\n\r\n')
+readme = open("FRIENDS - READ ME.txt", "rb").read().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+readme = readme.replace(b"server\\progress.json", b"files\\server\\progress.json")
+win += [(WIN_LAUNCHER, "SMG ONLINE.bat", False), (WIN_NOTE + readme, "READ ME.txt", False)]
 n1 = make_zip(os.path.join(OUT, "SMG-Online-Windows.zip"), "SMG-Online", win)
 
 mac = mod + server + legal + [(os.path.join("mac", f), f, True) for f in (
     "start-galaxy.sh", "JOIN A FRIEND.command", "HOST A GAME.command", "CHOOSE COLOUR.command",
     "SET DOLPHIN AND GAME PATH.command", "SERVER SETTINGS.command")]
 mac.append((os.path.join("mac", "READ ME - MAC.txt"), "READ ME - MAC.txt", False))
-n2 = make_zip(os.path.join(OUT, "SMG-Online-Mac.zip"), "SMG-Online-Mac", mac)
+n2 = make_zip(os.path.join(OUT, "SMG-Online-Mac-and-Linux.zip"), "SMG-Online-Mac", mac)
 
 wii = list(legal)
 for root, _, files in os.walk("wii"):

@@ -18,6 +18,7 @@ echo save > "$G/Wii/title/00010000/524d4745/data/GameData.bin"
 printf '[General]\nfoo = 1\n[Core]\nSerialPort1 = 6\nGFXBackend = OGL\n[DSP]\nx = 1\n' > "$G/Config/Dolphin.ini"
 printf '[Wiimote1]\nSource = 1\n' > "$G/Config/WiimoteNew.ini"
 export HOME="$T/home"
+export SMG_OS=Darwin   # the fake home is laid out like a Mac
 A="$HOME/Library/Application Support/SMG-Online"
 cd "$T/pack"
 

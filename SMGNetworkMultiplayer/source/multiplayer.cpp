@@ -18,6 +18,8 @@
 #include "progressSync.hpp"
 #include "uiIpFsTool.hpp"
 #include "playerColors.hpp"
+#include "fastForward.hpp"
+#include "stageStarBits.hpp"
 
 extern kmSymbol init__10GameSystemFv;
 extern kmSymbol control__10MarioActorFv;
@@ -142,6 +144,7 @@ static void resetRemotePlayers() {
 
 void onStageInit() {
     PlayerColors::onStageInit();
+    StageStarBits::onStageInit();
     resetRemotePlayers();
     ProgressSync::requestFullReplay();
 }
@@ -179,6 +182,7 @@ static void updateStage() {
         info.stageHash = 0;
         info.scenario = scenario;
         resetRemotePlayers();
+        StageStarBits::onStageChanged();
         info.stageHash = stageHash;
         if(stageHash) ProgressSync::onStageChanged(stageHash);
     }
@@ -220,9 +224,10 @@ static s32 getAnimationIdx(const XanimePlayer &xanime, const XanimeGroupInfo *an
 
 // Call this every frame
 static void updatePackets(MarioActor *mario) {
-    if(connected) Timestamps::beacon.update(transmitter); // needs some space from transmitter.update() to avoid lock contention
+    if(connected && !FastForward::extraUpdate) Timestamps::beacon.update(transmitter); // needs some space from transmitter.update() to avoid lock contention
     mario->control2();
-    if(initialized) {
+    // Once per real frame, also while a cutscene is being fast-forwarded
+    if(initialized && !FastForward::extraUpdate) {
         setDebugMsg(0, 0xFE);
         Timestamps::updateDolphinTime();
 
@@ -230,6 +235,7 @@ static void updatePackets(MarioActor *mario) {
         updateStage();
         updateActivity();
         ProgressSync::update();
+        StageStarBits::update();
 
         if(queryTimer > 0) queryTimer--;
         else {

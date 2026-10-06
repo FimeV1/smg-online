@@ -1,5 +1,5 @@
-SMG ONLINE - macOS
-==================
+SMG ONLINE - macOS and Linux
+============================
 
 STATUS: the Mac launchers have NOT been run on a real Mac yet (their logic was
 tested on Linux). The mod and the server are the same ones the Windows
@@ -55,8 +55,26 @@ Host a game
   4. "SERVER SETTINGS.command" opens the settings (port, player limit, shared
      world, what is shared). Restart the server after changing them.
 
+Linux
+-----
+The same folder works on Linux (tested only in a simulated setup, not on a
+real Linux desktop). Open a terminal in this folder and run:
+     bash start-galaxy.sh join        join a friend (asks for the address)
+     bash start-galaxy.sh host        start the server here and one game
+     bash start-galaxy.sh colour      choose your player colour
+     bash start-galaxy.sh paths       set where Dolphin and the game are
+Dolphin is found by itself if "dolphin-emu" is installed (package or
+Flatpak); an AppImage has to be pointed at once with "paths". With the
+Flatpak version, Dolphin may need permission to read this folder and
+~/.local/share/SMG-Online (Flatseal > Dolphin > Filesystem).
+Hosting needs python3. Settings and the mod's own copy of your save are kept
+in ~/.local/share/SMG-Online.
+
 Playing
 -------
+Hold Down on the +Control Pad during a cutscene or conversation to play it
+at 4x speed (a pre-rendered movie is skipped instead). The banked star bit total is shared by everyone on the server.
+
 You see each other when you are in the same galaxy and the same star (the
 Comet Observatory counts as one place). Mac, Windows and Wii players can all
 be on the same server.

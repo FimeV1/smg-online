@@ -17,7 +17,8 @@ enum ProgressEventType {
     PE_STORY_EVENT,         // name=event
     PE_TICO_SEED,           // arg=ticoId,  value=TOTAL star pieces given so far (Luma feeding)
     PE_GAME_EVENT,          // name=flag (e.g. "AppearXxxGalaxy"); galaxy/dome unlocks
-    PE_GAME_EVENT_VALUE     // name=value name, value=u16 (e.g. "new stars until X appears" countdowns, Luigi quest state)
+    PE_GAME_EVENT_VALUE,    // name=value name, value=u16 (e.g. "new stars until X appears" countdowns, Luigi quest state)
+    PE_STAR_BITS            // value=the shared star bit total (banked star bits; the newest value wins)
 };
 
 // Every event is idempotent (applying it twice is harmless), which is what lets

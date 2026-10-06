@@ -5,6 +5,7 @@
 #include "packets/playerPosition.hpp"
 #include "packets/beacon.hpp"
 #include "StarPieceSync.hpp"
+#include "stageStarBits.hpp"
 #include "packets/gameProgress.hpp"
 #include "progressSync.hpp"
 #include "beacon.hpp"
@@ -62,7 +63,10 @@ NetReturn PacketProcessor::process(Tag tag, const u8 *buffer, u32 len) {
             NetReturn res = StarPiece::netReadFromBuffer(&packet, buffer, len);
             if(res.err != NetReturn::OK) return res;
 
-            netStarPieceQueue.write(packet);
+            if(packet.countGeneration & 0x80) {
+                StageStarBits::onNetReport(packet.senderGlobalId, packet.countGeneration, packet.count);
+            }
+            else netStarPieceQueue.write(packet);
             break;
         }
         case GAME_PROGRESS:

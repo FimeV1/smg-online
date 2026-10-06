@@ -7,8 +7,19 @@
 
 #include <Game/System/GameDataFunction.hpp>
 #include <Game/System/GameDataHolder.hpp>
+class LiveActor;
+class HitSensor;
+class JMapInfoIter;
+#include <Game/Util/DemoUtil.hpp>
+#include <Game/Util/PlayerUtil.hpp>
+#include <Game/Util/ScreenUtil.hpp>
 #include <kamek/hooks.h>
 #include <revolution/os.h> // OSReport (-> Dolphin OSREPORT log)
+
+namespace MR {
+    bool hasGrandStar(int);
+    void requestChangeStageInGameMoving(const char *, s32);
+}
 
 namespace ProgressSync {
 
@@ -42,6 +53,24 @@ static volatile bool g_gateOpen = false;
 // report it back to the server. (Apply calls the GameDataHolder methods directly,
 // which already bypass the hooks; this is an extra guard against indirect triggers.)
 static bool g_applying = false;
+
+// The Observatory decides which parts are powered up while it loads. A Grand
+// Star that arrives from another player afterwards changes the save but not
+// what is on screen, so the Observatory is loaded again once it is safe.
+static bool g_inObservatory = false;
+static bool g_reloadObservatory = false;
+static u16 reloadTimer = 0;
+static const u16 RELOAD_QUIET_FRAMES = 90;
+static const s32 RELOAD_WIPE_FRAMES = 110; // what the Observatory's own doors use
+
+// The banked star bit total is shared: whenever ours has changed and settled
+// (the result screen counts it up one by one), the new total is reported, and
+// a total from another player replaces ours.
+static bool hasStarBitBaseline = false;
+static s32 sharedStarBits = 0;  // the total everyone agrees on, as far as we know
+static s32 watchedStarBits = 0; // ours last frame
+static u16 starBitQuietFrames = 0;
+static const u16 STAR_BIT_SETTLE_FRAMES = 45;
 
 // ---- Sending our own events (game thread only, except ackedSeq) -----------
 
@@ -78,8 +107,12 @@ void onSessionStart(u32 epoch) {
 }
 
 void onStageChanged(u32 stageHash) {
+    g_inObservatory = stageHash == STAGE_OBSERVATORY;
+    g_reloadObservatory = false;
+    reloadTimer = 0;
     if(stageHash == STAGE_FILE_SELECT) {
         g_gateOpen = false;
+        hasStarBitBaseline = false;
     }
     else if(stageHash == STAGE_OBSERVATORY && !g_gateOpen) {
         g_gateOpen = true;
@@ -207,6 +240,21 @@ static void applyEvent(const Packets::GameProgress &p) {
         case Packets::PE_GAME_EVENT_VALUE:
             holder->setGameEventValue(p.name, (u16)p.value);
             break;
+        case Packets::PE_STAR_BITS:
+        {
+            // Keep what we gained since our last report (e.g. a result screen
+            // that is still counting) on top of the new shared total
+            s32 have = holder->getStockedStarPieceNum();
+            s32 unreported = hasStarBitBaseline ? have - sharedStarBits : 0;
+            holder->addStockedStarPiece((int)(p.value + unreported - have));
+            sharedStarBits = p.value;
+            if(!hasStarBitBaseline) {
+                hasStarBitBaseline = true;
+                watchedStarBits = holder->getStockedStarPieceNum();
+                starBitQuietFrames = 0;
+            }
+            break;
+        }
     }
     g_applying = false;
 
@@ -215,17 +263,78 @@ static void applyEvent(const Packets::GameProgress &p) {
     remember(p.eventType, p.name, p.arg, p.value);
 }
 
+static s32 countGrandStars() {
+    s32 num = 0;
+    for(int i = 1; i <= 7; i++) if(MR::hasGrandStar(i)) num++;
+    return num;
+}
+
 static void applyPending() {
-    const Packets::GameProgress *p;
-    while((p = netGameProgressQueue.read())) {
+    const Packets::GameProgress *p = netGameProgressQueue.read();
+    if(!p) return;
+
+    const bool watch = g_gateOpen && g_inObservatory && GameDataFunction::getCurrentGameDataHolder();
+    const s32 grandStarsBefore = watch ? countGrandStars() : 0;
+
+    for(; p; p = netGameProgressQueue.read()) {
         // Left over from before the gate closed: drop it, it is replayed later
         if(g_gateOpen) applyEvent(*p);
         netGameProgressQueue.advance();
     }
+
+    if(watch && countGrandStars() != grandStarsBefore) g_reloadObservatory = true;
+}
+
+static void updateStarBits() {
+    if(!g_gateOpen) return;
+    GameDataHolder *holder = GameDataFunction::getCurrentGameDataHolder();
+    if(!holder) return;
+
+    const s32 have = holder->getStockedStarPieceNum();
+    if(!hasStarBitBaseline) {
+        // What the save holds when we arrive is not news
+        hasStarBitBaseline = true;
+        sharedStarBits = watchedStarBits = have;
+        starBitQuietFrames = 0;
+        return;
+    }
+
+    if(have != watchedStarBits) {
+        watchedStarBits = have;
+        starBitQuietFrames = 0;
+        return;
+    }
+    if(have == sharedStarBits) return;
+    if(++starBitQuietFrames < STAR_BIT_SETTLE_FRAMES) return;
+
+    starBitQuietFrames = 0;
+    sharedStarBits = have;
+    queueEvent(Packets::PE_STAR_BITS, nullptr, 0, have);
+}
+
+// Waits for a quiet moment (no cutscene or talk, player free and alive), then
+// loads the Observatory again the way its own doors do.
+static void updateObservatoryReload() {
+    if(!g_reloadObservatory || !g_inObservatory) return;
+
+    if(MR::isDemoActive() || MR::isPlayerInBind() || MR::isPlayerDead() || MR::isSystemWipeActive()) {
+        reloadTimer = 0;
+        return;
+    }
+    if(++reloadTimer < RELOAD_QUIET_FRAMES) return;
+
+    g_reloadObservatory = false;
+    reloadTimer = 0;
+    OSReport("[MP] new Grand Star from another player: reloading the Observatory\n");
+    MR::closeSystemWipeCircleWithCaptureScreen(RELOAD_WIPE_FRAMES);
+    MR::setWipeCircleCenterPos(*MR::getPlayerCenterPos());
+    MR::requestChangeStageInGameMoving("AstroGalaxy", 1);
 }
 
 void update() {
     applyPending();
+    updateStarBits();
+    updateObservatoryReload();
 
     if(pendingCount && ackedSeq == pending[pendingHead].seq) {
         pendingHead++;
