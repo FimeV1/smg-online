@@ -11,9 +11,11 @@ Built on Headpenguin's [SMGNetworkMultiplayer](https://github.com/Headpenguin/SM
 
 **Heavily developed using AI (local and cloud models).** Most of the code and
 documentation here was written by AI under the author's direction. It is not
-fully human-made, so read it and test it with that in mind. The cloud model
-was Anthropic's Claude (Opus 5.5), used through Claude Code; the commits it
-wrote are marked `Co-Authored-By: Claude`.
+fully human-made, so read it and test it with that in mind.
+
+* Cloud: Anthropic's Claude (Opus 5.5), used through Claude Code. The commits
+  it wrote are marked `Co-Authored-By: Claude`.
+* Local: Qwen 3.8 Flash-Next and Qwen 3.8 27B, run on the author's own PC.
 
 > **What has actually been tested:** the game mod in Dolphin on Windows
 > (played over the internet), and the server on Windows and Linux.
