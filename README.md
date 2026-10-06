@@ -9,6 +9,10 @@ Built on Headpenguin's [SMGNetworkMultiplayer](https://github.com/Headpenguin/SM
 (the game-side code) with a rewritten server and protocol (version 1.0). See
 [CREDITS.md](CREDITS.md).
 
+**Heavily developed using AI (local and cloud models).** Most of the code and
+documentation here was written by AI under the author's direction. It is not
+fully human-made, so read it and test it with that in mind.
+
 > **What has actually been tested:** the game mod in Dolphin on Windows
 > (played over the internet), and the server on Windows and Linux.
 > **Not tested on real hardware:** the Wii / Wii U version has never been run
