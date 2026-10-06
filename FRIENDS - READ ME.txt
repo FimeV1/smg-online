@@ -24,6 +24,17 @@ Title screen: the game's logo gets ONLINE under it. This is made from your
 own game file the first time you start; untick it in the window if you do
 not want it.
 
+Cutscenes: hold Down on the +Control Pad (Down arrow on the keyboard layout)
+during a cutscene or conversation to play it at 4x speed. During a
+pre-rendered movie, pressing Down skips it.
+
+Grand Stars: when another player gets one while you are in the Observatory,
+your Observatory reloads once by itself so the new part opens for you too.
+
+Star bits: the banked total (the number you keep between galaxies) is shared.
+What anyone earns or spends changes it for everyone. Inside a level, the
+players who are there together share one running counter too.
+
 First: right-click the zip > Extract All. Do not run it from inside the zip.
 If Windows blocks a .bat, click "More info" > "Run anyway".
 The first time, it asks where Dolphin.exe and your game file are. Hold Shift,

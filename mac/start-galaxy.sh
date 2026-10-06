@@ -1,6 +1,6 @@
 #!/bin/bash
 # =====================================================================
-#  SMG Online - macOS launcher (same job as start-galaxy.ps1 on Windows)
+#  SMG Online - macOS and Linux launcher (same job as start-galaxy.ps1 on Windows)
 #
 #    ./start-galaxy.sh join            ask for a server (Enter = last one) and join
 #    ./start-galaxy.sh join 203.0.113.7:5029
@@ -18,7 +18,13 @@ PLAYERS="${PLAYERS:-1}"
 DRY_RUN="${DRY_RUN:-}"
 
 BASE="$(cd "$(dirname "$0")" && pwd)"
-APPDIR="$HOME/Library/Application Support/SMG-Online"
+# Darwin = macOS; anything else is treated as Linux
+OS="${SMG_OS:-$(uname -s)}"
+if [ "$OS" = Darwin ]; then
+    APPDIR="$HOME/Library/Application Support/SMG-Online"
+else
+    APPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/SMG-Online"
+fi
 SETTINGS="$APPDIR/settings.txt"
 mkdir -p "$APPDIR"
 
@@ -75,10 +81,18 @@ ask_file() {  # ask_file "question" "current value" kind
 
 find_first() { local c; for c in "$@"; do [ -n "$c" ] && [ -f "$c" ] && { printf '%s' "$c"; return; }; done; }
 
-DOLPHIN="$(find_first "$SAVED_DOLPHIN" \
-    "/Applications/Dolphin.app/Contents/MacOS/Dolphin" \
-    "$HOME/Applications/Dolphin.app/Contents/MacOS/Dolphin" \
-    "$HOME/Downloads/Dolphin.app/Contents/MacOS/Dolphin")"
+if [ "$OS" = Darwin ]; then
+    DOLPHIN="$(find_first "$SAVED_DOLPHIN" \
+        "/Applications/Dolphin.app/Contents/MacOS/Dolphin" \
+        "$HOME/Applications/Dolphin.app/Contents/MacOS/Dolphin" \
+        "$HOME/Downloads/Dolphin.app/Contents/MacOS/Dolphin")"
+else
+    DOLPHIN="$(find_first "$SAVED_DOLPHIN" \
+        "$(command -v dolphin-emu 2>/dev/null)" \
+        "/usr/bin/dolphin-emu" "/usr/games/dolphin-emu" "/usr/local/bin/dolphin-emu" \
+        "/var/lib/flatpak/exports/bin/org.DolphinEmu.dolphin-emu" \
+        "$HOME/.local/share/flatpak/exports/bin/org.DolphinEmu.dolphin-emu")"
+fi
 GAME="$(find_first "$SAVED_GAME")"
 
 if [ "$MODE" = colour ] || [ "$MODE" = color ]; then
@@ -113,6 +127,28 @@ fi
 [ -n "$GAME" ] || GAME="$(ask_file "Where is your Super Mario Galaxy (USA) game file (.wbfs/.iso/.rvz)?" "" game)"
 
 # ---- 1: server ---------------------------------------------------------
+port_in_use() {
+    if command -v lsof >/dev/null 2>&1; then lsof -nP -iUDP:"$1" >/dev/null 2>&1
+    elif command -v ss >/dev/null 2>&1; then ss -lun 2>/dev/null | grep -q ":$1 "
+    else return 1; fi
+}
+
+# Linux: the first terminal program found gets the server; with none, it runs
+# in the background and writes to server/server.log.
+start_server_linux() {
+    local run="cd '$BASE/server' && python3 smg_server.py; echo; echo 'Server stopped. Press Enter to close.'; read _"
+    if command -v x-terminal-emulator >/dev/null 2>&1; then x-terminal-emulator -e bash -c "$run" >/dev/null 2>&1 &
+    elif command -v gnome-terminal >/dev/null 2>&1; then gnome-terminal -- bash -c "$run" >/dev/null 2>&1 &
+    elif command -v konsole >/dev/null 2>&1; then konsole -e bash -c "$run" >/dev/null 2>&1 &
+    elif command -v xfce4-terminal >/dev/null 2>&1; then xfce4-terminal -x bash -c "$run" >/dev/null 2>&1 &
+    elif command -v xterm >/dev/null 2>&1; then xterm -e bash -c "$run" >/dev/null 2>&1 &
+    else
+        ( cd "$BASE/server" && nohup python3 smg_server.py > server.log 2>&1 & )
+        warn "no terminal program found: the server runs in the background (log: server/server.log)."
+        warn "stop it with:  pkill -f smg_server.py"
+    fi
+}
+
 PORT=5029
 if [ "$MODE" = host ]; then
     INI="$BASE/server/server-settings.ini"
@@ -121,16 +157,20 @@ if [ "$MODE" = host ]; then
         [ -n "$p" ] && PORT="$p"
     fi
     ADDRESS="127.0.0.1:$PORT"
-    say "[1/3] Hosting on this Mac (UDP $PORT)..."
+    say "[1/3] Hosting on this computer (UDP $PORT)..."
     if [ -n "$DRY_RUN" ]; then
         warn "(dry run: not starting the server)"
-    elif lsof -nP -iUDP:"$PORT" >/dev/null 2>&1; then
+    elif port_in_use "$PORT"; then
         warn "server already up."
     else
         command -v python3 >/dev/null 2>&1 || die "Python 3 is needed to host (https://www.python.org/downloads/)."
         # Its own Terminal window: shows who joins; closing it stops the server.
-        osascript -e "tell application \"Terminal\" to do script \"cd '$BASE/server' && python3 smg_server.py\"" >/dev/null \
-            || die "could not open a Terminal window for the server."
+        if [ "$OS" = Darwin ]; then
+            osascript -e "tell application \"Terminal\" to do script \"cd '$BASE/server' && python3 smg_server.py\"" >/dev/null \
+                || die "could not open a Terminal window for the server."
+        else
+            start_server_linux
+        fi
         sleep 2
     fi
 else
@@ -180,7 +220,15 @@ cat > "$PRESET" <<EOF
 EOF
 
 # ---- 3: one Dolphin per player ------------------------------------------
-GLOBAL="$HOME/Library/Application Support/Dolphin"
+if [ "$OS" = Darwin ]; then
+    GLOBAL="$HOME/Library/Application Support/Dolphin"
+else
+    # Native package, Flatpak, or the old location; the first one that exists
+    GLOBAL="${XDG_DATA_HOME:-$HOME/.local/share}/dolphin-emu"
+    for d in "$GLOBAL" "$HOME/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu" "$HOME/.dolphin-emu"; do
+        [ -d "$d" ] && { GLOBAL="$d"; break; }
+    done
+fi
 SAVE_REL="Wii/title/00010000/524d4745"   # RMGE = Super Mario Galaxy (USA)
 
 # Make sure "[Core] SerialPort1 = 255" (nothing in GameCube slot SP1): arcade

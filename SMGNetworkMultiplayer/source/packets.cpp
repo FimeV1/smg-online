@@ -301,9 +301,9 @@ NetReturn _StarPiece::netWriteToBuffer(void *buff, u32 len) const {
 
     packet->playerId = playerId.toGlobalId();
    
-    packet->padding[0] = 0;
-    packet->padding[1] = 0;
-    packet->padding[2] = 0;
+    packet->padding[0] = countGeneration;
+    packet->padding[1] = (u8)((u16)count >> 8);
+    packet->padding[2] = (u8)count;
 
     packet->timestamp = implementation::ServerPacketTimestamp(timestamp);
 
@@ -323,6 +323,10 @@ NetReturn _StarPiece::netReadFromBuffer(StarPiece *out, const void *buff, u32 le
 
     out->initLineStart = packet->initLineStart;
     out->initLineEnd = packet->initLineEnd;
+
+    out->countGeneration = packet->padding[0];
+    out->count = (s16)(((u16)packet->padding[1] << 8) | packet->padding[2]);
+    out->senderGlobalId = packet->playerId;
 
     out->arrivalTime = Timestamps::now();
 
