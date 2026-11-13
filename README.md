@@ -15,7 +15,7 @@ fully human-made, so read it and test it with that in mind.
 
 * Cloud: Anthropic's Claude (Opus 5.5), used through Claude Code. The commits
   it wrote are marked `Co-Authored-By: Claude`.
-* Local: open models running on the author's own computers, via [Byte](https://bytedev.co.uk).
+* Local: open models running on the author's own computers, via [Byte](https://bytedev.co.uk) ([@ByteDevAI](https://github.com/ByteDevAI)).
 
 > **What has actually been tested:** the game mod in Dolphin on Windows
 > (played over the internet), and the server on Windows and Linux.
